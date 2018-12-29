@@ -4,103 +4,61 @@
  * Handles toggling the navigation menu for small screens and enables TAB key
  * navigation support for dropdown menus.
  */
+
 ( function() {
-	var container, button, menu, links, i, len;
+	// My code
+  function make_openable(selector) {
+    let item_open = false
 
-	container = document.getElementById( 'site-navigation' );
-	if ( ! container ) {
-		return;
-	}
+    return {
+      close: function() {
+        item_open = false
+        this.set_html()
+      },
+      open: function() {
+        item_open = true
+        this.set_html()
+      },
+      set_html() {
+        const element = document.querySelector(selector)
+        element.classList.remove("closed")
+        if(!item_open)
+          element.classList.add("closed")
+      }
+    }
+  }
 
-	button = container.getElementsByTagName( 'button' )[0];
-	if ( 'undefined' === typeof button ) {
-		return;
-	}
+  let main_menu = make_openable('.menu')
+  document.querySelector('.option.close').onclick = function() { main_menu.close() }
+  const menu_button = document.querySelector('.menu-button')
+  menu_button.onclick = function() { main_menu.open() }
 
-	menu = container.getElementsByTagName( 'ul' )[0];
+  let video_overlay = make_openable('.video-overlay')
+  document.querySelector('.video-overlay').onclick = function() {
+    video_overlay.close()
+    stopVideo()
+  }
 
-	// Hide menu toggle button if menu is empty and return early.
-	if ( 'undefined' === typeof menu ) {
-		button.style.display = 'none';
-		return;
-	}
+  document.querySelector('.img-play-overlay').onclick = function() {
+    video_overlay.open()
+  }
 
-	menu.setAttribute( 'aria-expanded', 'false' );
-	if ( -1 === menu.className.indexOf( 'nav-menu' ) ) {
-		menu.className += ' nav-menu';
-	}
-
-	button.onclick = function() {
-		if ( -1 !== container.className.indexOf( 'toggled' ) ) {
-			container.className = container.className.replace( ' toggled', '' );
-			button.setAttribute( 'aria-expanded', 'false' );
-			menu.setAttribute( 'aria-expanded', 'false' );
-		} else {
-			container.className += ' toggled';
-			button.setAttribute( 'aria-expanded', 'true' );
-			menu.setAttribute( 'aria-expanded', 'true' );
-		}
-	};
-
-	// Get all the link elements within the menu.
-	links    = menu.getElementsByTagName( 'a' );
-
-	// Each time a menu link is focused or blurred, toggle focus.
-	for ( i = 0, len = links.length; i < len; i++ ) {
-		links[i].addEventListener( 'focus', toggleFocus, true );
-		links[i].addEventListener( 'blur', toggleFocus, true );
-	}
-
-	/**
-	 * Sets or removes .focus class on an element.
-	 */
-	function toggleFocus() {
-		var self = this;
-
-		// Move up through the ancestors of the current link until we hit .nav-menu.
-		while ( -1 === self.className.indexOf( 'nav-menu' ) ) {
-
-			// On li elements toggle the class .focus.
-			if ( 'li' === self.tagName.toLowerCase() ) {
-				if ( -1 !== self.className.indexOf( 'focus' ) ) {
-					self.className = self.className.replace( ' focus', '' );
-				} else {
-					self.className += ' focus';
-				}
-			}
-
-			self = self.parentElement;
-		}
-	}
-
-	/**
-	 * Toggles `focus` class to allow submenu access on tablets.
-	 */
-	( function( container ) {
-		var touchStartFn, i,
-			parentLink = container.querySelectorAll( '.menu-item-has-children > a, .page_item_has_children > a' );
-
-		if ( 'ontouchstart' in window ) {
-			touchStartFn = function( e ) {
-				var menuItem = this.parentNode, i;
-
-				if ( ! menuItem.classList.contains( 'focus' ) ) {
-					e.preventDefault();
-					for ( i = 0; i < menuItem.parentNode.children.length; ++i ) {
-						if ( menuItem === menuItem.parentNode.children[i] ) {
-							continue;
-						}
-						menuItem.parentNode.children[i].classList.remove( 'focus' );
-					}
-					menuItem.classList.add( 'focus' );
-				} else {
-					menuItem.classList.remove( 'focus' );
-				}
-			};
-
-			for ( i = 0; i < parentLink.length; ++i ) {
-				parentLink[i].addEventListener( 'touchstart', touchStartFn, false );
-			}
-		}
-	}( container ) );
+  // https://developers.google.com/youtube/iframe_api_reference
+  var tag = document.createElement('script');
+  tag.src = "//www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 } )();
+
+var player;
+function onYouTubeIframeAPIReady() {
+  console.log('init player')
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'Rb0UmrCXxVA',
+  });
+}
+function stopVideo() {
+  player.stopVideo();
+}
