@@ -10,3 +10,38 @@
 ## Comments
 --------------------------------------------------------------*/
 @import "primary/comments";
+
+
+.topbar {
+  text-align: center;
+  color: white;
+  font-family: Roboto;
+  font-size: 15px;
+  // background: #023670;
+  background: black;
+  padding: 5px 0px;
+}
+
+#masthead {
+  background: black;
+  color: white;
+}
+
+.second-bar {
+ padding: 24px 20px;
+ position: relative;
+ display: flex;
+}
+.second-bar-main {
+  display: inline-block;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.title {
+  display: inline-block;
+  font-family: Impact;
+  font-size: 30px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
