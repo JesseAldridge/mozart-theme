@@ -994,7 +994,7 @@ a:hover, a:active {
   text-transform: uppercase;
   font-family: "Roboto Slab";
   font-size: 20px;
-  background: #ec3f35;
+  background: #fc3f35;
   cursor: pointer;
   padding: 10px 20px;
   display: inline-block;
@@ -1002,7 +1002,7 @@ a:hover, a:active {
 }
 
 .subscribe-button:hover {
-  background: #fc0000;
+  background: #ac0f05;
 }
 
 .site-content {
